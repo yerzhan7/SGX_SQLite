@@ -215,10 +215,15 @@ Enclave/Enclave.o: Enclave/Enclave.cpp
 	$(CXX) $(Enclave_Cpp_Flags) -c $< -o $@
 	@echo "CXX  <=  $<"
 
+# Preprocess sqlite3
+Enclave/sqlite3.i: Enclave/sqlite3.c
+	$(CC) -DSQLITE_THREADSAFE=0 -E $< -o $@
+	@echo "CC-Preprocess  <=  $<"
+
 # Compile sqlite3
-Enclave/sqlite3.o: Enclave/sqlite3.c
-	$(CXX) $(Enclave_Cpp_Flags) -DSQLITE_THREADSAFE=0 -c $< -o $@
-	@echo "CXX  <=  $<"
+Enclave/sqlite3.o: Enclave/sqlite3.i Enclave/sqlite3.c
+	$(CC) $(Enclave_C_Flags) -DSQLITE_THREADSAFE=0 -c $< -o $@
+	@echo "CC  <=  $<"
 
 # Link and generate Enclave shared library/executable
 $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)
@@ -232,4 +237,4 @@ $(Signed_Enclave_Name): $(Enclave_Name)
 .PHONY: clean
 
 clean:
-	rm -f .config_* $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.*
+	rm -f .config_* $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.* Enclave/sqlite3.i
