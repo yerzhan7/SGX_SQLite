@@ -217,7 +217,7 @@ Enclave/Enclave.o: Enclave/Enclave.cpp
 
 # Compile sqlite3
 Enclave/sqlite3.o: Enclave/sqlite3.c
-	$(CXX) $(Enclave_Cpp_Flags) -c $< -o $@
+	$(CXX) $(Enclave_Cpp_Flags) -DSQLITE_THREADSAFE=0 -c $< -o $@
 	@echo "CXX  <=  $<"
 
 # Link and generate Enclave shared library/executable
