@@ -85,7 +85,7 @@ else
 endif
 Crypto_Library_Name := sgx_tcrypto
 
-Enclave_Cpp_Files := Enclave/Enclave.cpp
+Enclave_Cpp_Files := Enclave/Enclave.cpp Enclave/sqlite3.c
 Enclave_Include_Paths := -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/libcxx
 
 CC_BELOW_4_9 := $(shell expr "`$(CC) -dumpversion`" \< "4.9")
@@ -113,7 +113,7 @@ Enclave_Link_Flags := $(SGX_COMMON_CFLAGS) -Wl,--no-undefined -nostdlib -nodefau
 	-Wl,--defsym,__ImageBase=0 -Wl,--gc-sections   \
 	-Wl,--version-script=Enclave/Enclave.lds
 
-Enclave_Cpp_Objects := $(Enclave_Cpp_Files:.cpp=.o)
+Enclave_Cpp_Objects := Enclave/Enclave.o Enclave/sqlite3.o
 
 Enclave_Name := enclave.so
 Signed_Enclave_Name := enclave.signed.so
@@ -211,7 +211,12 @@ Enclave/Enclave_t.o: Enclave/Enclave_t.c
 	@echo "CC   <=  $<"
 
 # Compile trusted Enclave
-Enclave/%.o: Enclave/%.cpp
+Enclave/Enclave.o: Enclave/Enclave.cpp
+	$(CXX) $(Enclave_Cpp_Flags) -c $< -o $@
+	@echo "CXX  <=  $<"
+
+# Compile sqlite3
+Enclave/sqlite3.o: Enclave/sqlite3.c
 	$(CXX) $(Enclave_Cpp_Flags) -c $< -o $@
 	@echo "CXX  <=  $<"
 
