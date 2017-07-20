@@ -70,7 +70,7 @@ else
 	App_Link_Flags += -lsgx_uae_service
 endif
 
-App_Cpp_Objects := $(App_Cpp_Files:.cpp=.o)
+App_Cpp_Objects := $(App_Cpp_Files:.cpp=.o) App/ocalls.o
 
 App_Name := app
 
@@ -175,6 +175,11 @@ App/Enclave_u.c: $(SGX_EDGER8R) Enclave/Enclave.edl
 
 # Compile untrusted brigde routines
 App/Enclave_u.o: App/Enclave_u.c
+	$(CC) $(App_C_Flags) -DSGX_UNTRUSTED -c $< -o $@
+	@echo "CC   <=  $<"
+
+# Compile ocalls
+App/ocalls.o: App/ocalls.c
 	$(CC) $(App_C_Flags) -c $< -o $@
 	@echo "CC   <=  $<"
 
@@ -184,7 +189,7 @@ App/%.o: App/%.cpp
 	@echo "CXX  <=  $<"
 
 # Link and generate main Application executable
-$(App_Name): App/Enclave_u.o $(App_Cpp_Objects)
+$(App_Name): App/Enclave_u.o App/ocalls.o $(App_Cpp_Objects)
 	$(CXX) $^ -o $@ $(App_Link_Flags)
 	@echo "LINK =>  $@"
 
