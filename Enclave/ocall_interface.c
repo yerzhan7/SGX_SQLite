@@ -22,7 +22,7 @@ int open64(const char *filenamr, int oflag, ...){
     return 0;
 }
 
-off64_t lseek64(int fd, off64_t offset, int whence){
+off_t lseek64(int fd, off_t offset, int whence){
     char error_msg[256];
     snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
     ocall_print_error(error_msg);
@@ -226,7 +226,7 @@ uid_t geteuid(void){
     return 0;
 }
 
-void *mmap64(void *addr, size_t len, int prot, int flags, int fildes, off64_t off){
+void *mmap64(void *addr, size_t len, int prot, int flags, int fildes, off_t off){
     char error_msg[256];
     snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
     ocall_print_error(error_msg);
