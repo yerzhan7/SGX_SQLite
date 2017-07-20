@@ -12,4 +12,5 @@ App/Enclave_u.*
 Enclave/Enclave.o
 Enclave/sqlite3.o
 Enclave/sqlite3.i
+Enclave/ocall_interface.i
 Enclave/Enclave_t.*

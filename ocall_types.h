@@ -11,6 +11,9 @@
 #else
 // For trusted part copy required standard library declarations from stdlib headers
 
+// For ocall_interface.c do not redefine these types, otherwise define
+#ifndef DO_NOT_REDEFINE_FOR_OCALL
+
 typedef unsigned long int __dev_t;
 typedef unsigned int __uid_t;
 typedef unsigned int __gid_t;
@@ -35,7 +38,6 @@ typedef long int __blkcnt64_t;
 typedef __off_t off_t;
 typedef long int __syscall_slong_t;
 
-
 struct stat
 {
     __dev_t st_dev;
@@ -55,7 +57,8 @@ struct stat
     __syscall_slong_t __glibc_reserved[3];
 };
 
-#endif // SGX_UNTRUSTED
+#endif // DO_NOT_REDEFINE_FOR_OCALL_INTERFACE
 
+#endif // SGX_UNTRUSTED
 
 #endif // _OCALL_TYPES_H_

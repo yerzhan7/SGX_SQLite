@@ -107,7 +107,7 @@ Enclave_Link_Flags := $(SGX_COMMON_CFLAGS) -Wl,--no-undefined -nostdlib -nodefau
 	-Wl,--defsym,__ImageBase=0 -Wl,--gc-sections   \
 	-Wl,--version-script=Enclave/Enclave.lds
 
-Enclave_Cpp_Objects := Enclave/Enclave.o Enclave/sqlite3.o
+Enclave_Cpp_Objects := Enclave/Enclave.o Enclave/sqlite3.o Enclave/ocall_interface.o
 
 Enclave_Name := enclave.so
 Signed_Enclave_Name := enclave.signed.so
@@ -224,6 +224,16 @@ Enclave/sqlite3.o: Enclave/sqlite3.i Enclave/sqlite3.c
 	$(CC) $(Enclave_C_Flags) -DSQLITE_THREADSAFE=0 -c $< -o $@
 	@echo "CC  <=  $<"
 
+# Preprocess sqlite3
+Enclave/ocall_interface.i: Enclave/ocall_interface.c
+	$(CC) -I$(SGX_SDK)/include -E $< -o $@
+	@echo "CC-Preprocess  <=  $<"
+
+# Compile ocall_interface
+Enclave/ocall_interface.o: Enclave/ocall_interface.i Enclave/Enclave_t.c
+	$(CC) $(Enclave_C_Flags) -c $< -o $@
+	@echo "CC  <=  $<"
+
 # Link and generate Enclave shared library/executable
 $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)
 	$(CXX) $^ -o $@ $(Enclave_Link_Flags)
@@ -236,4 +246,4 @@ $(Signed_Enclave_Name): $(Enclave_Name)
 .PHONY: clean
 
 clean:
-	rm -f .config_* $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.* Enclave/sqlite3.i
+	rm -f .config_* $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.* Enclave/sqlite3.i Enclave/ocall_interface.i
