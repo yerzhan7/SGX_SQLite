@@ -8,9 +8,9 @@ using namespace std;
 # define ENCLAVE_FILENAME "enclave.signed.so"
 
 /* OCall function from enclave to print string*/
-void ocall_print_string(const char *str)
+void ocall_print_error(const char *str)
 {
-    cout << str << endl;
+    cerr << str << endl;
 }
 
 /* Application entry */
