@@ -9,7 +9,7 @@ enclave {
         void ocall_println_string([in, string] const char *str);
         void ocall_print_error([in, string] const char *str);
 
-        int ocall_lstat([in, string] const char *path, [in, out, size=size] struct stat* buf, size_t size);
+        int ocall_lstat([in, string] const char *path, [in, out, size=size] struct stat* buf, size_t size) propagate_errno;
         int ocall_stat([in, string] const char *path, [in, out, size=size] struct stat* buf, size_t size);
         int ocall_fstat(int fd, [in, out, size=size] struct stat* buf, size_t size);
         int ocall_ftruncate(int fd, off_t length);
