@@ -85,10 +85,14 @@ struct tm *localtime(const time_t *timep){
 }
 
 pid_t getpid(void){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+    int ret;
+    sgx_status_t status = ocall_getpid(&ret);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
 int fsync(int fd){

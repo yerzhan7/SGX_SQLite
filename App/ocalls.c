@@ -33,3 +33,9 @@ char* ocall_getcwd(char *buf, size_t size){
     return getcwd(buf, size);
     printf("Exiting %s\n", __func__);
 }
+
+int ocall_getpid(void){
+    printf("Entering %s\n", __func__);
+    return getpid();
+    printf("Exiting %s\n", __func__);
+}
