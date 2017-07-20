@@ -211,7 +211,7 @@ Enclave/Enclave.o: Enclave/Enclave.cpp
 
 # Preprocess sqlite3
 Enclave/sqlite3.i: Enclave/sqlite3.c
-	$(CC) -DSQLITE_THREADSAFE=0 -E $< -o $@
+	$(CC) -I$(SGX_SDK)/include -DSQLITE_THREADSAFE=0 -E $< -o $@
 	@echo "CC-Preprocess  <=  $<"
 
 # Compile sqlite3
