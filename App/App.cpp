@@ -7,10 +7,14 @@ using namespace std;
 # define MAX_PATH FILENAME_MAX
 # define ENCLAVE_FILENAME "enclave.signed.so"
 
-/* OCall function from enclave to print string*/
 void ocall_print_error(const char *str)
 {
     cerr << str << endl;
+}
+
+void ocall_println_string(const char *str)
+{
+    cout << str << endl;
 }
 
 /* Application entry */
