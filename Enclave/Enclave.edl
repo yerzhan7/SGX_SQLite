@@ -1,4 +1,5 @@
 enclave {
+    from "sgx_tstdc.edl" import *;
 
     trusted {
         public void ecall_open(void);
@@ -6,6 +7,7 @@ enclave {
 
     untrusted {
         void ocall_print_error([in, string] const char *str);
+        int ocall_lstat64([in, string] const char *path, [in, out, size=size] struct stat64* buf, size_t size);
     };
 
 };
