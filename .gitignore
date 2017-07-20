@@ -15,3 +15,6 @@ Enclave/sqlite3.i
 Enclave/ocall_interface.o
 Enclave/ocall_interface.i
 Enclave/Enclave_t.*
+
+test.db
+test.db-journal

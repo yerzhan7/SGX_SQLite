@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 int ocall_lstat(const char *path, struct stat* buf){
     printf("Entering %s\n", __func__);
@@ -37,5 +38,11 @@ char* ocall_getcwd(char *buf, size_t size){
 int ocall_getpid(void){
     printf("Entering %s\n", __func__);
     return getpid();
+    printf("Exiting %s\n", __func__);
+}
+
+int ocall_open64(const char *filename, int flags, mode_t mode){
+    printf("Entering %s\n", __func__);
+    return open(filename, flags, mode); // redirect it open() instead of open(64)
     printf("Exiting %s\n", __func__);
 }

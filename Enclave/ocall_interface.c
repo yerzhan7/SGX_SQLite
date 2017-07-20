@@ -3,10 +3,16 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <stdarg.h> // for variable arguments functions
+#include <fcntl.h>
+#include <stdlib.h>
 
 // At this point we have already definitions needed for  ocall interface, so:
 #define DO_NOT_REDEFINE_FOR_OCALL
 #include "Enclave_t.h"
+
+// For open64 need to define this
+#define O_TMPFILE (__O_TMPFILE | O_DIRECTORY)
 
 long int sysconf(int name){
     char error_msg[256];
@@ -15,11 +21,25 @@ long int sysconf(int name){
     return 0;
 }
 
-int open64(const char *filenamr, int oflag, ...){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+int open64(const char *filename, int flags, ...){
+    mode_t mode = 0; // file permission bitmask
+
+    // Get the mode_t from arguments
+	if ((flags & O_CREAT) || (flags & O_TMPFILE) == O_TMPFILE) {
+		va_list valist;
+		va_start(valist, flags);
+		mode = va_arg(valist, mode_t);
+		va_end(valist);
+	}
+
+    int ret;
+    sgx_status_t status = ocall_open64(&ret, filename, flags, mode);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
 off_t lseek64(int fd, off_t offset, int whence){
