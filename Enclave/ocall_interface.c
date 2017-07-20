@@ -126,21 +126,7 @@ char *getcwd(char *buf, size_t size){
     return 0;
 }
 
-int stat64(const char *path, struct stat64 *buf){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
-}
-
-int fstat64(int fd, struct stat64 *buf){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
-}
-
-int my_lstat(const char *path, struct stat *buf){
+int sgx_lstat(const char *path, struct stat *buf){
     int ret;
     sgx_status_t status = ocall_lstat(&ret, path, buf, sizeof(struct stat));
     if (status != SGX_SUCCESS) {
@@ -151,18 +137,37 @@ int my_lstat(const char *path, struct stat *buf){
     return ret;
 }
 
-int lstat64(const char *path, struct stat64 *buf){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+int sgx_stat(const char *path, struct stat *buf){
+    int ret;
+    sgx_status_t status = ocall_stat(&ret, path, buf, sizeof(struct stat));
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
-int ftruncate64 (int fd, off64_t length){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+int sgx_fstat(int fd, struct stat *buf){
+    int ret;
+    sgx_status_t status = ocall_fstat(&ret, fd, buf, sizeof(struct stat));
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
+}
+
+int sgx_ftruncate(int fd, off_t length){
+    int ret;
+    sgx_status_t status = ocall_ftruncate(&ret, fd, length);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
 int fcntl(int fd, int cmd, ... /* arg */ ){
