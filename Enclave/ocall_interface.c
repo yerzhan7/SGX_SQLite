@@ -120,10 +120,14 @@ int access(const char *pathname, int mode){
 }
 
 char *getcwd(char *buf, size_t size){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+    char* ret;
+    sgx_status_t status = ocall_getcwd(&ret, buf, size);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
 int sgx_lstat(const char *path, struct stat *buf){
