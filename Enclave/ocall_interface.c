@@ -134,10 +134,14 @@ time_t time(time_t *t){
 }
 
 int close(int fd){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+    int ret;
+    sgx_status_t status = ocall_close(&ret, fd);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
 int access(const char *pathname, int mode){
@@ -238,10 +242,14 @@ int fchmod(int fd, mode_t mode){
 }
 
 int unlink(const char *pathname){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+    int ret;
+    sgx_status_t status = ocall_unlink(&ret, pathname);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
 int mkdir(const char *pathname, mode_t mode) {
