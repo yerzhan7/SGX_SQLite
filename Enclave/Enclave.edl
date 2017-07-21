@@ -19,5 +19,6 @@ enclave {
         int ocall_open64([in, string] const char *filename, int flags, mode_t mode);
         off_t ocall_lseek64(int fd, off_t offset, int whence) propagate_errno;
         int ocall_read(int fd, [out, size=count] void *buf, size_t count) propagate_errno;
+        int ocall_fcntl(int fd, int cmd, [in, size=size] void* arg, size_t size) propagate_errno;
     };
 };

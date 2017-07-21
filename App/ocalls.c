@@ -58,3 +58,9 @@ int ocall_read(int fd, void *buf, size_t count){
     return read(fd, buf, count);
     printf("Exiting %s\n", __func__);
 }
+
+int ocall_fcntl(int fd, int cmd, void* arg, size_t size){
+    printf("Entering %s\n", __func__);
+    return fcntl(fd, cmd, arg);
+    printf("Exiting %s\n", __func__);
+}

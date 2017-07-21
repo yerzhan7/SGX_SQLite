@@ -203,10 +203,20 @@ int sgx_ftruncate(int fd, off_t length){
 }
 
 int fcntl(int fd, int cmd, ... /* arg */ ){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+    // Read one argument
+    va_list valist;
+	va_start(valist, cmd);
+	void* arg = va_arg(valist, void*);
+	va_end(valist);
+
+    int ret;
+    sgx_status_t status = ocall_fcntl(&ret, fd, cmd, arg, sizeof(void*));
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
 ssize_t read(int fd, void *buf, size_t count){
