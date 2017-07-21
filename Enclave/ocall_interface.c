@@ -274,10 +274,14 @@ int fchown(int fd, uid_t owner, gid_t group){
 }
 
 uid_t geteuid(void){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+    int ret;
+    sgx_status_t status = ocall_getuid(&ret);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return (uid_t)ret;
 }
 
 void *mmap64(void *addr, size_t len, int prot, int flags, int fildes, off_t off){

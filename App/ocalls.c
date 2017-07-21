@@ -64,3 +64,8 @@ int ocall_unlink(const char *pathname){
     printf("Entering %s\n", __func__);
     return unlink(pathname);
 }
+
+int ocall_getuid(void){
+    printf("Entering %s\n", __func__);
+    return getuid();
+}
