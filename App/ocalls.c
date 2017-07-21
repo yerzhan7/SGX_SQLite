@@ -1,4 +1,5 @@
 // This is a real implementation of ocalls
+#include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -50,6 +51,11 @@ int ocall_read(int fd, void *buf, size_t count){
     return read(fd, buf, count);
 }
 
+int ocall_write(int fd, const void *buf, size_t count){
+    printf("Entering %s\n", __func__);
+    return write(fd, buf, count);
+}
+
 int ocall_fcntl(int fd, int cmd, void* arg, size_t size){
     printf("Entering %s\n", __func__);
     return fcntl(fd, cmd, arg);
@@ -68,4 +74,14 @@ int ocall_unlink(const char *pathname){
 int ocall_getuid(void){
     printf("Entering %s\n", __func__);
     return getuid();
+}
+
+char* ocall_getenv(const char *name){
+    printf("Entering %s\n", __func__);
+    return getenv(name);
+}
+
+int ocall_fsync(int fd){
+    printf("Entering %s\n", __func__);
+    return fsync(fd);
 }

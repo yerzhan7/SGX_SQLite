@@ -22,8 +22,14 @@ void ecall_open()
       return;
     }
 
+    ocall_println_string("Enclave: Creating sample table ...");
     const char* sql = "CREATE TABLE COMPANY(ID INT PRIMARY KEY NOT NULL,NAME TEXT NOT NULL, AGE INT NOT NULL, ADDRESS CHAR(50), SALARY REAL);";
     char *zErrMsg = 0;
-    sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+    rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+    if (rc) {
+      ocall_println_string("Error - create sample table: ");
+      ocall_println_string(sqlite3_errmsg(db));
+      return;
+    }
     sqlite3_close(db);
 }

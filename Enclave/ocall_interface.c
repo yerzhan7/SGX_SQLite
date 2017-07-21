@@ -120,10 +120,14 @@ pid_t getpid(void){
 }
 
 int fsync(int fd){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+    int ret;
+    sgx_status_t status = ocall_fsync(&ret, fd);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
 time_t time(time_t *t){
@@ -234,6 +238,17 @@ ssize_t read(int fd, void *buf, size_t count){
     return (ssize_t)ret;
 }
 
+ssize_t write(int fd, const void *buf, size_t count){
+    int ret;
+    sgx_status_t status = ocall_write(&ret, fd, buf, count);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return (ssize_t)ret;
+}
+
 int fchmod(int fd, mode_t mode){
     char error_msg[256];
     snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
@@ -282,6 +297,17 @@ uid_t geteuid(void){
         ocall_print_error(error_msg);
     }
     return (uid_t)ret;
+}
+
+char* getenv(const char *name){
+    char* ret = NULL;
+    sgx_status_t status = ocall_getenv(&ret, name);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
 void *mmap64(void *addr, size_t len, int prot, int flags, int fildes, off_t off){
