@@ -43,6 +43,18 @@ int ocall_getpid(void){
 
 int ocall_open64(const char *filename, int flags, mode_t mode){
     printf("Entering %s\n", __func__);
-    return open(filename, flags, mode); // redirect it open() instead of open(64)
+    return open(filename, flags, mode); // redirect it open() instead of open64()
+    printf("Exiting %s\n", __func__);
+}
+
+off_t ocall_lseek64(int fd, off_t offset, int whence){
+    printf("Entering %s\n", __func__);
+    return lseek(fd, offset, whence); // redirect it lseek() instead of lseek64()
+    printf("Exiting %s\n", __func__);
+}
+
+int ocall_read(int fd, void *buf, size_t count){
+    printf("Entering %s\n", __func__);
+    return read(fd, buf, count);
     printf("Exiting %s\n", __func__);
 }

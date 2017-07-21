@@ -43,10 +43,14 @@ int open64(const char *filename, int flags, ...){
 }
 
 off_t lseek64(int fd, off_t offset, int whence){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+    off_t ret;
+    sgx_status_t status = ocall_lseek64(&ret, fd, offset, whence);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return ret;
 }
 
 int gettimeofday(struct timeval *tv, struct timezone *tz){
@@ -206,10 +210,14 @@ int fcntl(int fd, int cmd, ... /* arg */ ){
 }
 
 ssize_t read(int fd, void *buf, size_t count){
-    char error_msg[256];
-    snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: no ocall implementation for ", __func__);
-    ocall_print_error(error_msg);
-    return 0;
+    int ret;
+    sgx_status_t status = ocall_read(&ret, fd, buf, count);
+    if (status != SGX_SUCCESS) {
+        char error_msg[256];
+        snprintf(error_msg, sizeof(error_msg), "%s%s", "Error: when calling ocall_", __func__);
+        ocall_print_error(error_msg);
+    }
+    return (ssize_t)ret;
 }
 
 int fchmod(int fd, mode_t mode){
