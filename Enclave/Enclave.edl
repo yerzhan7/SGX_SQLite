@@ -1,12 +1,16 @@
 enclave {
     from "sgx_tstdc.edl" import *;
-    include "../ocall_types.h"
+    include "../ocall_types.h" // Need to import some type declartions from stdlib
+
     trusted {
-        public void ecall_open(void);
+        public void ecall_opendb([in, string] const char *dbname); // open SQLite connection to dbname
+        public void ecall_execute_sql([in, string] const char *sql); // Execute SQL statement inside enclave
+        public void ecall_closedb(void); // close SQLite db connection
     };
 
     untrusted {
         void ocall_println_string([in, string] const char *str);
+        void ocall_print_string([in, string] const char *str);
         void ocall_print_error([in, string] const char *str);
 
         int ocall_lstat([in, string] const char *path, [in, out, size=size] struct stat *buf, size_t size) propagate_errno;
@@ -18,6 +22,7 @@ enclave {
         int ocall_getpid(void);
         int ocall_getuid(void);
         char* ocall_getenv([in, string] const char *name);
+
         int ocall_open64([in, string] const char *filename, int flags, mode_t mode);
         int ocall_close(int fd);
         off_t ocall_lseek64(int fd, off_t offset, int whence) propagate_errno;
@@ -26,6 +31,5 @@ enclave {
         int ocall_fsync(int fd);
         int ocall_fcntl(int fd, int cmd, [in, size=size] void* arg, size_t size) propagate_errno;
         int ocall_unlink([in, string] const char *pathname);
-
     };
 };
